@@ -55,13 +55,16 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //set logInTask events
+        logInButton.disableProperty().bind(progressIndicator.visibleProperty());
+        usernameTextField.disableProperty().bind(progressIndicator.visibleProperty());
+        passwordTextField.disableProperty().bind(progressIndicator.visibleProperty());
         logInService.setOnRunning(event ->{
-            logInButton.setDisable(true);
+            //logInButton.setDisable(true);
             progressIndicator.setVisible(true);
         });
         logInService.setOnSucceeded(event ->{
             System.out.println("setOnSucceeded");
-            logInButton.setDisable(false);
+            //logInButton.setDisable(false);
             progressIndicator.setVisible(false);
             if(logInService.getValue().equals(true)){
                 try {

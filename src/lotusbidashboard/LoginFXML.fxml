@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -11,33 +14,34 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="lotusbidashboard.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lotusbidashboard.LoginController">
    <children>
-      <BorderPane layoutX="125.0" layoutY="100.0">
-         <bottom>
-            <GridPane prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="119.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="302.0" minWidth="10.0" prefWidth="231.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+      <BorderPane layoutX="50.0" layoutY="50.0" prefHeight="196.0" prefWidth="350.0">
+         <center>
+            <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="logInButton" mnemonicParsing="false" onAction="#onLogInButtonClick" text="Log In" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                  <Label text="Username" />
-                  <Label text="Password" GridPane.rowIndex="1" />
-                  <TextField fx:id="usernameTextField" GridPane.columnIndex="1" />
-                  <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <ProgressIndicator fx:id="progressIndicator" visible="false" GridPane.rowIndex="2" />
-                  <Label fx:id="errorLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <GridPane prefHeight="112.0" prefWidth="350.0">
+                     <children>
+                        <Button fx:id="logInButton" mnemonicParsing="false" onAction="#onLogInButtonClick" prefHeight="25.0" prefWidth="297.0" text="Log In" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                        <Label text="Username" />
+                        <Label text="Password" GridPane.rowIndex="1" />
+                        <TextField fx:id="usernameTextField" GridPane.columnIndex="1" />
+                        <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="119.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="302.0" minWidth="10.0" prefWidth="231.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="107.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="99.0" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <ProgressIndicator fx:id="progressIndicator" visible="false" />
                </children>
-            </GridPane>
-         </bottom>
+            </StackPane>
+         </center>
       </BorderPane>
    </children>
 </AnchorPane>

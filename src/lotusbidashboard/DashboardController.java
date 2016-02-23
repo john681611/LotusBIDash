@@ -192,9 +192,13 @@ public class DashboardController implements Initializable {
 
     private void addFiltersToUI() {
         chartFilters.getChildren().clear();
+        chartFilters.getChildren().add(addLable("Year:"));
         chartFilters.getChildren().add(filterHBox(yearCheckboxes));
+        chartFilters.getChildren().add(addLable("Quater:"));
         chartFilters.getChildren().add(filterHBox(quarterCheckboxes));
+        chartFilters.getChildren().add(addLable("Vehicle:"));
         chartFilters.getChildren().add(filterHBox(vehicleCheckboxes));
+        chartFilters.getChildren().add(addLable("Region:"));
         chartFilters.getChildren().add(filterHBox(regionCheckboxes));
     }
     
@@ -206,6 +210,11 @@ public class DashboardController implements Initializable {
             hbox.getChildren().add(cb);
         }
         return hbox;
+    }
+    private Label addLable (String name){
+      Label lable = new Label();
+        lable.setText(name);
+        return lable;
     }
 
     private List<CheckBox> buildCheckboxes(List<CheckBox> cbList, List list) {
