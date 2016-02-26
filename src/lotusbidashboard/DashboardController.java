@@ -64,6 +64,9 @@ public class DashboardController implements Initializable {
     
     @FXML
     private VBox chartFilters;
+    
+    @FXML
+    private VBox statsBox;
 
     private final SalesService salesService = new SalesService();
     private ObservableList<SalesData> data = FXCollections.observableArrayList();
@@ -76,7 +79,7 @@ public class DashboardController implements Initializable {
     private List<CheckBox> vehicleCheckboxes = new ArrayList<CheckBox>();
     private List<CheckBox> regionCheckboxes = new ArrayList<CheckBox>();
     private List<CheckBox> quarterCheckboxes = new ArrayList<CheckBox>();
-        
+    private Stats stats = new Stats();
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -115,6 +118,8 @@ public class DashboardController implements Initializable {
                 addFiltersToUI();
                 bindTable();
                 buildBarChart();
+                updateStats();
+                
         });
         
         buildTable();
@@ -131,15 +136,14 @@ public class DashboardController implements Initializable {
         //clear charts
         barChart.getData().clear();
 
-        for(CheckBox year : yearCheckboxes){
-            if(year.isSelected()){
-                XYChart.Series series = new XYChart.Series();
-                series.setName(year.getText());
-                data.stream().filter(o -> Integer.toString(o.getYear()).equals(year.getText())).forEach(o -> series.getData().add(new XYChart.Data<>(o.getVehicle(), o.getQuantity())));
-            
-                barChart.getData().add(series);
-            }
-        }
+        yearCheckboxes.stream().filter((year) -> (year.isSelected())).map((year) -> {
+            XYChart.Series series = new XYChart.Series();
+            series.setName(year.getText());
+            data.stream().filter(o -> Integer.toString(o.getYear()).equals(year.getText())).forEach(o -> series.getData().add(new XYChart.Data<>(o.getVehicle(), o.getQuantity())));
+            return series;
+        }).forEach((series) -> {
+            barChart.getData().add(series);
+        });
     }
 
 
@@ -189,13 +193,13 @@ public class DashboardController implements Initializable {
 
     private void addFiltersToUI() {
         chartFilters.getChildren().clear();
-        chartFilters.getChildren().add(addLable("Year:"));
+        chartFilters.getChildren().add(addLabel("Year:"));
         chartFilters.getChildren().add(filterHBox(yearCheckboxes));
-        chartFilters.getChildren().add(addLable("Quater:"));
+        chartFilters.getChildren().add(addLabel("Quater:"));
         chartFilters.getChildren().add(filterHBox(quarterCheckboxes));
-        chartFilters.getChildren().add(addLable("Vehicle:"));
+        chartFilters.getChildren().add(addLabel("Vehicle:"));
         chartFilters.getChildren().add(filterHBox(vehicleCheckboxes));
-        chartFilters.getChildren().add(addLable("Region:"));
+        chartFilters.getChildren().add(addLabel("Region:"));
         chartFilters.getChildren().add(filterHBox(regionCheckboxes));
     }
     
@@ -208,10 +212,10 @@ public class DashboardController implements Initializable {
         });
         return hbox;
     }
-    private Label addLable (String name){
-      Label lable = new Label();
-        lable.setText(name);
-        return lable;
+    private Label addLabel (String name){
+      Label label = new Label();
+        label.setText(name);
+        return label;
     }
 
     private List<CheckBox> buildCheckboxes(List<CheckBox> cbList, List list) {
@@ -222,6 +226,7 @@ public class DashboardController implements Initializable {
             cb.setSelected(true);
             cb.setOnAction(e ->{
                 buildBarChart();
+                updateStats();
             });
             checkBoxes.add(cb);
         }
@@ -258,4 +263,13 @@ public class DashboardController implements Initializable {
         //dataTable.itemsProperty().bind(salesService.valueProperty());
     }
     //Get stats data
+    private void updateStats(){
+    stats.setAll(data,yearCheckboxes,vehicleCheckboxes,regionCheckboxes,quarterCheckboxes);
+    statsBox.getChildren().clear();
+    statsBox.getChildren().add(addLabel("Max = "+ stats.getMax()));
+    statsBox.getChildren().add(addLabel("Min = "+ stats.getMin()));
+    statsBox.getChildren().add(addLabel("Total = "+ stats.getTotal()));
+    statsBox.getChildren().add(addLabel("Average = "+ String.format("%.2f",stats.getAverage())));
+    statsBox.getChildren().add(addLabel("Standard Deviation = "+ String.format("%.2f", stats.getSdv())));
+    }
 }
