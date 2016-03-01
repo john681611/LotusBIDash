@@ -25,8 +25,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
@@ -56,6 +58,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private BarChart barChart;
+    
+    @FXML
+    private PieChart pieChart;
 
     @FXML
     private CheckBox autoUpdateCheck;
@@ -68,6 +73,12 @@ public class DashboardController implements Initializable {
     
     @FXML
     private HBox statsBox;
+    
+    @FXML
+    private ChoiceBox XAxis;
+    
+    @FXML
+    private ChoiceBox YAxis;
 
     private final SalesService salesService = new SalesService();
     private ObservableList<Sales> data = FXCollections.observableArrayList();
