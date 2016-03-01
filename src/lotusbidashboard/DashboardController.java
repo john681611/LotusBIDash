@@ -171,7 +171,7 @@ public class DashboardController implements Initializable {
         });
     }
     
-    private void buildBarChart(ObservableList<SalesData> filteredData) {
+    private void buildBarChart(ObservableList<Sales> filteredData) {
         //clear charts
         barChart.getData().clear();
 
@@ -187,7 +187,7 @@ public class DashboardController implements Initializable {
     }
 
 
-    private void bindTable(ObservableList<SalesData> filteredData) {
+    private void bindTable(ObservableList<Sales> filteredData) {
         dataTable.getItems().clear();
         dataTable.getItems().addAll(filteredData);
     }

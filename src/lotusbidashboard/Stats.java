@@ -34,7 +34,8 @@ public class Stats {
         min.set(filteredData.stream().map((val) -> val.getQuantity()).reduce(0, Integer::min));
         max.set(filteredData.stream().map((val) -> val.getQuantity()).reduce(0, Integer::max));        
         average.set(total.get()/ filteredData.size());
-        double totalVal = filteredData.stream().map((val) -> Math.pow(val.getQuantity() - average.get(), 2)).reduce(totalVal, (accumulator, _item) -> accumulator + _item);
+        double totalVal = 0.0;
+        totalVal = filteredData.stream().map((val) -> Math.pow(val.getQuantity() - average.get(), 2)).reduce(totalVal, (accumulator, _item) -> accumulator + _item);
         sdv.set(Math.sqrt((totalVal/filteredData.size())));
     }
     //gets & sets and stuff
