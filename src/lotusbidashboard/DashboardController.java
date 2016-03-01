@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
@@ -66,7 +67,7 @@ public class DashboardController implements Initializable {
     private VBox chartFilters;
     
     @FXML
-    private VBox statsBox;
+    private HBox statsBox;
 
     private final SalesService salesService = new SalesService();
     private ObservableList<Sales> data = FXCollections.observableArrayList();
@@ -112,7 +113,7 @@ public class DashboardController implements Initializable {
             data.setAll(salesService.getValue());
         });
         
-        data.addListener((ListChangeListener.Change<? extends SalesData> c) -> {
+        data.addListener((ListChangeListener.Change<? extends Sales> c) -> {
                 setFilters();
                 createFilterCheckboxes();
                 addFiltersToUI();
@@ -142,46 +143,72 @@ public class DashboardController implements Initializable {
                 if(box.isSelected() && box.getText().equals(Integer.toString(s.getYear()))){
                     foundYear = true;
                 }
-            }           
-            for (CheckBox box : quarterCheckboxes) {
-                if(box.isSelected() && box.getText().equals('Q'+ Byte.toString(s.getQTR()))){
-                    foundQuater = true;
+            }    
+            if(foundYear){
+                for (CheckBox box : quarterCheckboxes) {
+                    if(box.isSelected() && box.getText().equals('Q'+ Integer.toString(s.getQTR()))){
+                        foundQuater = true;
+                    }
+                }
+                if(foundQuater){
+                    for (CheckBox box : regionCheckboxes) {
+                        if(box.isSelected() && box.getText().equals(s.getRegion())){
+                            foundRegion = true;
+                        }
+                    }
+                    if(foundRegion){
+                        for (CheckBox box : vehicleCheckboxes) {
+                            if(box.isSelected() && box.getText().equals(s.getVehicle())){
+                                foundVehicle = true;
+                            }
+                        }
+                    }
                 }
             }
-            
-            for (CheckBox box : regionCheckboxes) {
-                if(box.isSelected() && box.getText().equals(s.getRegion())){
-                    foundRegion = true;
-                }
-            }
-            
-            for (CheckBox box : vehicleCheckboxes) {
-                if(box.isSelected() && box.getText().equals(s.getVehicle())){
-                    foundVehicle = true;
-                }
-            }
-            //System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
+            System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
             if (foundYear && foundVehicle && foundRegion && foundQuater) {
                 filteredData.add(s);
             }         
         });
+        updateStats(filteredData);
+        buildBarChart(filteredData);
+        bindTable(filteredData);
         return filteredData;
     }
     
+//    private void buildBarChart(ObservableList<Sales> filteredData) {
+//        //clear charts
+//        barChart.getData().clear();
+//
+//        years.stream().map((year) -> {
+//            XYChart.Series series = new XYChart.Series<String,Number>();
+//            series.setName(Integer.toString(year));
+//            filteredData.stream().filter(o -> o.getYear() == year).forEach(o -> {series.getData().add(new XYChart.Data<String,Number>(o.getVehicle(), o.getQuantity()));});
+//            return series;
+//        }).forEach((series) -> {
+//            barChart.getData().add(series);
+//        });
+//    }
     private void buildBarChart(ObservableList<Sales> filteredData) {
         //clear charts
         barChart.getData().clear();
-
-        yearCheckboxes.stream().filter((year) -> (year.isSelected())).map((year) -> {
-            XYChart.Series series = new XYChart.Series<String,Number>();
-            series.setName(year.getText());
-            filteredData.stream().filter(o -> Integer.toString(o.getYear()).equals(year.getText())).forEach(o -> {series.getData().add(new XYChart.Data<String,Number>(o.getVehicle(), o.getQuantity()));});
+        
+        years.stream().map((year) -> {
+            XYChart.Series series = new XYChart.Series();
+            series.setName(Integer.toString(year));          
+            Map<String, Integer> totalSalesByYear = filteredData.stream()
+                    .filter(o -> o.getYear() == year)
+                        .collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
+            
+            for (Map.Entry<String, Integer> entry : totalSalesByYear.entrySet()) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            }
             return series;
         }).forEach((series) -> {
-            System.out.println(series.getData());
             barChart.getData().add(series);
         });
     }
+
 
 
     private void bindTable(ObservableList<Sales> filteredData) {
@@ -279,21 +306,21 @@ public class DashboardController implements Initializable {
     }
 
     private void buildTable() {
-        TableColumn<SalesData,Integer> yearCol = new TableColumn<>();
+        TableColumn<Sales,Integer> yearCol = new TableColumn<>();
         yearCol.setText("Year");
-        yearCol.setCellValueFactory(new PropertyValueFactory<SalesData, Integer>("Year"));
-        TableColumn<SalesData,Integer> qtrCol = new TableColumn<>();
+        yearCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("Year"));
+        TableColumn<Sales,Integer> qtrCol = new TableColumn<>();
         qtrCol.setText("Quarter");
-        qtrCol.setCellValueFactory(new PropertyValueFactory<SalesData, Integer>("QTR"));
+        qtrCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("QTR"));
         TableColumn modelCol = new TableColumn();
         modelCol.setText("Model");
         modelCol.setCellValueFactory(new PropertyValueFactory("Vehicle"));
         TableColumn regionCol = new TableColumn();
         regionCol.setText("Region");
         regionCol.setCellValueFactory(new PropertyValueFactory("Region"));
-        TableColumn<SalesData,Integer> salesCol = new TableColumn<>();
+        TableColumn<Sales,Integer> salesCol = new TableColumn<>();
         salesCol.setText("Sales");
-        salesCol.setCellValueFactory(new PropertyValueFactory<SalesData, Integer>("Quantity"));
+        salesCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("Quantity"));
         
         dataTable.getColumns().addAll(yearCol,qtrCol,modelCol,regionCol,salesCol);
         //dataTable.itemsProperty().bind(salesService.valueProperty());

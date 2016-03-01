@@ -113,6 +113,7 @@ public class LoginController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("DashboardFXML.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("Lotus Dashboard");
         stage.show();
     }
     

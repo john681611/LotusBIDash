@@ -16,7 +16,7 @@ import java.util.Scanner;
  *
  * @author Jamie
  */
-class SalesTask extends Task<ObservableList<SalesData>> {
+class SalesTask extends Task<ObservableList<Sales>> {
 
     private static final String URL_STRING = "http://glynserver.cms.livjm.ac.uk/";
     private static final String SERVICE = "DashService/";
@@ -81,7 +81,7 @@ class SalesTask extends Task<ObservableList<SalesData>> {
 
 
     @Override
-    protected ObservableList<SalesData> call() throws Exception {
+    protected ObservableList<Sales> call() throws Exception {
         String data = getData();
         System.out.println(data);
         return dataParser.parseJSONData(data);

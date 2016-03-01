@@ -49,32 +49,9 @@
    <center>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <SplitPane dividerPositions="0.169449081803005">
+            <SplitPane>
                <items>
-                  <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="746.0" prefWidth="100.0">
-                     <panes>
-                        <TitledPane animated="false" text="Filters">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox fx:id="chartFilters" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </TitledPane>
-                        <TitledPane animated="false" text="Statistics">
-                           <content>
-                              <VBox fx:id="statsBox" prefHeight="200.0" prefWidth="100.0" />
-                           </content>
-                        </TitledPane>
-                        <TitledPane animated="false" prefHeight="320.0" prefWidth="80.0" text="Other">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                           </content>
-                        </TitledPane>
-                     </panes>
-                  </Accordion>
-                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="371.0" prefWidth="520.0">
+                  <SplitPane dividerPositions="0.5495978552278821, 0.8981233243967829" orientation="VERTICAL" prefHeight="371.0" prefWidth="520.0">
                      <items>
                         <TabPane tabClosingPolicy="UNAVAILABLE">
                           <tabs>
@@ -139,6 +116,7 @@
                           </tabs>
                         </TabPane>
                         <TableView fx:id="dataTable" prefHeight="200.0" prefWidth="200.0" />
+                        <HBox fx:id="statsBox" prefHeight="100.0" prefWidth="200.0" />
                      </items>
                   </SplitPane>
                </items>
@@ -169,4 +147,12 @@
         </menus>
       </MenuBar>
    </top>
+   <left>
+      <SplitPane dividerPositions="0.6863270777479893" orientation="VERTICAL" prefHeight="748.0" prefWidth="256.0" BorderPane.alignment="CENTER">
+         <items>
+            <VBox prefHeight="508.0" prefWidth="218.0" />
+            <VBox fx:id="chartFilters" prefHeight="200.0" prefWidth="100.0" />
+         </items>
+      </SplitPane>
+   </left>
 </BorderPane>
