@@ -116,9 +116,8 @@ public class DashboardController implements Initializable {
                 setFilters();
                 createFilterCheckboxes();
                 addFiltersToUI();
-                bindTable();
-                buildBarChart();
-                updateStats();
+                generateFilteredData();
+
                 
         });
         
@@ -130,26 +129,67 @@ public class DashboardController implements Initializable {
             salesService.reset();
             salesService.start();
         }
-    }    
+    }  
     
-    private void buildBarChart() {
+     public void generateFilteredData(){
+         ObservableList<Sales> filteredData = FXCollections.observableArrayList();
+        data.stream().forEach((Sales s) -> {
+            boolean foundYear = false;
+            boolean foundVehicle = false;
+            boolean foundRegion = false;
+            boolean foundQuater = false;
+            for (CheckBox box : yearCheckboxes) {
+                if(box.isSelected() && box.getText().equals(Integer.toString(s.getYear()))){
+                    foundYear = true;
+                }
+            }           
+            for (CheckBox box : quarterCheckboxes) {
+                if(box.isSelected() && box.getText().equals('Q'+ Byte.toString(s.getQTR()))){
+                    foundQuater = true;
+                }
+            }
+            
+            for (CheckBox box : regionCheckboxes) {
+                if(box.isSelected() && box.getText().equals(s.getRegion())){
+                    foundRegion = true;
+                }
+            }
+            
+            for (CheckBox box : vehicleCheckboxes) {
+                if(box.isSelected() && box.getText().equals(s.getVehicle())){
+                    foundVehicle = true;
+                }
+            }
+            //System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
+            if (foundYear && foundVehicle && foundRegion && foundQuater) {
+                filteredData.add(s);
+            }
+            //update stuff using filtered data
+                bindTable(filteredData);
+                buildBarChart(filteredData);
+                updateStats(filteredData);
+        });
+    }
+    
+    private void buildBarChart(ObservableList<SalesData> filteredData) {
         //clear charts
         barChart.getData().clear();
 
         yearCheckboxes.stream().filter((year) -> (year.isSelected())).map((year) -> {
-            XYChart.Series series = new XYChart.Series();
+            XYChart.Series series = new XYChart.Series<String,Number>();
             series.setName(year.getText());
-            data.stream().filter(o -> Integer.toString(o.getYear()).equals(year.getText())).forEach(o -> series.getData().add(new XYChart.Data<>(o.getVehicle(), o.getQuantity())));
+            filteredData.stream().filter(o -> Integer.toString(o.getYear()).equals(year.getText())).forEach(o -> {series.getData().add(new XYChart.Data<String,Number>(o.getVehicle(), o.getQuantity()));});
             return series;
         }).forEach((series) -> {
+            System.out.println(series.getData());
             barChart.getData().add(series);
         });
     }
 
 
-    private void bindTable() {
+    private void bindTable(ObservableList<SalesData> filteredData) {
         dataTable.getItems().clear();
-        dataTable.getItems().addAll(data);
+        dataTable.getItems().addAll(filteredData);
     }
 
     private void setLastUpdated() {
@@ -225,8 +265,7 @@ public class DashboardController implements Initializable {
             CheckBox cb = new CheckBox(list.get(index).toString());
             cb.setSelected(true);
             cb.setOnAction(e ->{
-                buildBarChart();
-                updateStats();
+                generateFilteredData();
             });
             checkBoxes.add(cb);
         }
@@ -263,8 +302,8 @@ public class DashboardController implements Initializable {
         //dataTable.itemsProperty().bind(salesService.valueProperty());
     }
     //Get stats data
-    private void updateStats(){
-    stats.setAll(data,yearCheckboxes,vehicleCheckboxes,regionCheckboxes,quarterCheckboxes);
+    private void updateStats(ObservableList<Sales> filteredData){
+    stats.setAll(filteredData);
     statsBox.getChildren().clear();
     statsBox.getChildren().add(addLabel("Max = "+ stats.getMax()));
     statsBox.getChildren().add(addLabel("Min = "+ stats.getMin()));
