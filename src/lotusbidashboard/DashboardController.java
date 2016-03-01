@@ -69,7 +69,7 @@ public class DashboardController implements Initializable {
     private VBox statsBox;
 
     private final SalesService salesService = new SalesService();
-    private ObservableList<SalesData> data = FXCollections.observableArrayList();
+    private ObservableList<Sales> data = FXCollections.observableArrayList();
     private List<Integer> years;
     private List<String> vehicles;
     private List<String> regions;
@@ -131,7 +131,7 @@ public class DashboardController implements Initializable {
         }
     }  
     
-     public void generateFilteredData(){
+     public ObservableList<Sales> generateFilteredData(){
          ObservableList<Sales> filteredData = FXCollections.observableArrayList();
         data.stream().forEach((Sales s) -> {
             boolean foundYear = false;
@@ -163,12 +163,9 @@ public class DashboardController implements Initializable {
             //System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
             if (foundYear && foundVehicle && foundRegion && foundQuater) {
                 filteredData.add(s);
-            }
-            //update stuff using filtered data
-                bindTable(filteredData);
-                buildBarChart(filteredData);
-                updateStats(filteredData);
+            }         
         });
+        return filteredData;
     }
     
     private void buildBarChart(ObservableList<Sales> filteredData) {
