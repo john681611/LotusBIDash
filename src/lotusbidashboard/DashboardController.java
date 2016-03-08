@@ -5,6 +5,7 @@
  */
 package lotusbidashboard;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -21,8 +23,11 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
@@ -31,13 +36,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
+import javafx.stage.Stage;
 /**
  *
  * @author Jamie
@@ -74,27 +80,38 @@ public class DashboardController implements Initializable {
     @FXML
     private HBox statsBox;
     
-    @FXML
-    private ChoiceBox XAxis;
+        @FXML
+    private ChoiceBox LineXAxis;
     
     @FXML
-    private ChoiceBox YAxis;
+    private ChoiceBox LineYAxis;
+    
+    @FXML
+    private ChoiceBox BarXAxis;
+    
+    @FXML
+    private ChoiceBox BarYAxis;
+    
+    @FXML 
+    private ChoiceBox PieChoice;
 
     private final SalesService salesService = new SalesService();
     private ObservableList<Sales> data = FXCollections.observableArrayList();
+    private ObservableList<Sales> filteredData = FXCollections.observableArrayList();
     private List<Integer> years;
     private List<String> vehicles;
     private List<String> regions;
     private final List<String> quarters = Arrays.asList("Q1","Q2","Q3","Q4");
-    
     private List<CheckBox> yearCheckboxes = new ArrayList<CheckBox>();
     private List<CheckBox> vehicleCheckboxes = new ArrayList<CheckBox>();
     private List<CheckBox> regionCheckboxes = new ArrayList<CheckBox>();
     private List<CheckBox> quarterCheckboxes = new ArrayList<CheckBox>();
+    private final List<String> pieChoiceList =  Arrays.asList("Vehicle","Region");
+    
     private Stats stats = new Stats();
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
         //set service change listener
         salesService.stateProperty().addListener((ObservableValue<? extends Worker.State> observableValue, Worker.State oldState, Worker.State newState) -> {
             System.out.println(newState.toString());
@@ -141,10 +158,19 @@ public class DashboardController implements Initializable {
             salesService.reset();
             salesService.start();
         }
+        
+        PieChoice.getItems().setAll(pieChoiceList);
+        PieChoice.getSelectionModel().selectFirst();
+        PieChoice.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldVal, String newVal) {
+                buildPieChart(newVal);
+            }
+        });
     }  
     
-     public ObservableList<Sales> generateFilteredData(){
-         ObservableList<Sales> filteredData = FXCollections.observableArrayList();
+     public void generateFilteredData(){
+         filteredData.clear();
         data.stream().forEach((Sales s) -> {
             boolean foundYear = false;
             boolean foundVehicle = false;
@@ -176,15 +202,15 @@ public class DashboardController implements Initializable {
                     }
                 }
             }
-            System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
+            //System.out.println(s + " = " + foundYear +" : "+foundVehicle +" : "+ foundRegion  +" : "+ foundQuater);
             if (foundYear && foundVehicle && foundRegion && foundQuater) {
                 filteredData.add(s);
             }         
         });
-        updateStats(filteredData);
-        buildBarChart(filteredData);
-        bindTable(filteredData);
-        return filteredData;
+        updateStats();
+        buildBarChart();
+        bindTable();
+        buildPieChart(PieChoice.valueProperty().getValue().toString());
     }
     
 //    private void buildBarChart(ObservableList<Sales> filteredData) {
@@ -200,7 +226,7 @@ public class DashboardController implements Initializable {
 //            barChart.getData().add(series);
 //        });
 //    }
-    private void buildBarChart(ObservableList<Sales> filteredData) {
+    private void buildBarChart() {
         //clear charts
         barChart.getData().clear();
         
@@ -211,18 +237,34 @@ public class DashboardController implements Initializable {
                     .filter(o -> o.getYear() == year)
                         .collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
             
-            for (Map.Entry<String, Integer> entry : totalSalesByYear.entrySet()) {
+            totalSalesByYear.entrySet().stream().forEach((entry) -> {
                 series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-            }
+            });
             return series;
         }).forEach((series) -> {
             barChart.getData().add(series);
         });
     }
+    private void buildPieChart(String item){
+        pieChart.getData().clear();
+        Map<String,Integer> list = null;
+        System.out.println(PieChoice.getSelectionModel().getSelectedItem());
+        if("Vehicle".equals(item)) {
+              list = filteredData.stream().collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
+        }else{
+              list = filteredData.stream().collect(Collectors.groupingBy(Sales::getRegion, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
+        }
+             list.entrySet().stream().forEach((entry) -> {
+                 PieChart.Data pieData = new  PieChart.Data("" , entry.getValue());
+                 pieData.setName(entry.getKey() + ": "+ entry.getValue().toString());
+                 pieChart.getData().add(pieData);
+
+        });
+    }
 
 
 
-    private void bindTable(ObservableList<Sales> filteredData) {
+    private void bindTable() {
         dataTable.getItems().clear();
         dataTable.getItems().addAll(filteredData);
     }
@@ -337,7 +379,7 @@ public class DashboardController implements Initializable {
         //dataTable.itemsProperty().bind(salesService.valueProperty());
     }
     //Get stats data
-    private void updateStats(ObservableList<Sales> filteredData){
+    private void updateStats(){
     stats.setAll(filteredData);
     statsBox.getChildren().clear();
     statsBox.getChildren().add(addLabel("Max = "+ stats.getMax()));
@@ -345,5 +387,24 @@ public class DashboardController implements Initializable {
     statsBox.getChildren().add(addLabel("Total = "+ stats.getTotal()));
     statsBox.getChildren().add(addLabel("Average = "+ String.format("%.2f",stats.getAverage())));
     statsBox.getChildren().add(addLabel("Standard Deviation = "+ String.format("%.2f", stats.getSdv())));
+    }
+    
+    @FXML void showAbout() throws IOException {
+        System.out.println("doLogIn");
+        Stage stage  = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("AboutFXML.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Lotus Dashboard About");
+        stage.show();
+    }
+    @FXML void showSettings() throws IOException {
+        System.out.println("doLogIn");
+        Stage stage  = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("AboutFXML.fxml"));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Lotus Dashboard About");
+        stage.show();
     }
 }
