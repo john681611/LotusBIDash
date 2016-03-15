@@ -39,7 +39,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -50,53 +52,73 @@ import javafx.stage.Stage;
  */
 public class DashboardController implements Initializable {
     
-    @FXML
-    private ProgressIndicator myProgressIndicator;
+     @FXML
+    private Tab PiePane;
 
     @FXML
-    private TableView dataTable;
-
-    @FXML
-    private Region veil;
-
-    @FXML
-    private LineChart lineChart;
-
-    @FXML
-    private BarChart barChart;
-    
-    @FXML
-    private PieChart pieChart;
+    private TextField newYear;
 
     @FXML
     private CheckBox autoUpdateCheck;
 
     @FXML
-    private Label lastUpdatedLabel;
-    
+    private Region veil;
+
+    @FXML
+    private ProgressIndicator myProgressIndicator;
+
     @FXML
     private VBox chartFilters;
-    
+
+    @FXML
+    private LineChart<?, ?> lineChart;
+
+    @FXML
+    private FlowPane pieFlow;
+
+    @FXML
+    private TextField newAmmount;
+
+    @FXML
+    private ChoiceBox<?> LineXAxis;
+
+    @FXML
+    private ChoiceBox<?> BarXAxis;
+
+    @FXML
+    private BarChart<?, ?> barChart;
+
     @FXML
     private HBox statsBox;
-    
-        @FXML
-    private ChoiceBox LineXAxis;
+
+    @FXML
+    private TableView<?> dataTable;
+
+    @FXML
+    private ChoiceBox<?> PieChoice;
+
+    @FXML
+    private TextField newVehicle;
+
+    @FXML
+    private Label lastUpdatedLabel;
+
+    @FXML
+    private ChoiceBox<?> LineYAxis;
+
+    @FXML
+    private ChoiceBox<?> BarYAxis;
+
+    @FXML
+    private TextField newQuater;
     
     @FXML
-    private ChoiceBox LineYAxis;
-    
-    @FXML
-    private ChoiceBox BarXAxis;
-    
-    @FXML
-    private ChoiceBox BarYAxis;
-    
-    @FXML 
-    private ChoiceBox PieChoice;
+    private TextField newRegion;
+
 
     private final SalesService salesService = new SalesService();
     private ObservableList<Sales> data = FXCollections.observableArrayList();
+    private ObservableList<Sales> whatIfData = FXCollections.observableArrayList();
     private ObservableList<Sales> filteredData = FXCollections.observableArrayList();
     private List<Integer> years;
     private List<String> vehicles;
@@ -164,13 +186,14 @@ public class DashboardController implements Initializable {
         PieChoice.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue observableValue, String oldVal, String newVal) {
-                buildPieChart(newVal);
+                buildPieCharts();
             }
         });
     }  
     
      public void generateFilteredData(){
          filteredData.clear();
+        data.addAll(whatIfData);
         data.stream().forEach((Sales s) -> {
             boolean foundYear = false;
             boolean foundVehicle = false;
@@ -210,22 +233,8 @@ public class DashboardController implements Initializable {
         updateStats();
         buildBarChart();
         bindTable();
-        buildPieChart(PieChoice.valueProperty().getValue().toString());
+        buildPieCharts();
     }
-    
-//    private void buildBarChart(ObservableList<Sales> filteredData) {
-//        //clear charts
-//        barChart.getData().clear();
-//
-//        years.stream().map((year) -> {
-//            XYChart.Series series = new XYChart.Series<String,Number>();
-//            series.setName(Integer.toString(year));
-//            filteredData.stream().filter(o -> o.getYear() == year).forEach(o -> {series.getData().add(new XYChart.Data<String,Number>(o.getVehicle(), o.getQuantity()));});
-//            return series;
-//        }).forEach((series) -> {
-//            barChart.getData().add(series);
-//        });
-//    }
     private void buildBarChart() {
         //clear charts
         barChart.getData().clear();
@@ -245,21 +254,36 @@ public class DashboardController implements Initializable {
             barChart.getData().add(series);
         });
     }
-    private void buildPieChart(String item){
-        pieChart.getData().clear();
+    private void buildPieCharts(){
+        pieFlow.getChildren().clear();
+        years.stream().forEach((year) -> {
+            for (CheckBox box : yearCheckboxes) {
+                if(box.isSelected() && box.getText().equals(Integer.toString(year))){
+                     buildPieChart(year,PieChoice.valueProperty().getValue().toString());
+                }
+            }  
+        });
+    };
+    private void buildPieChart(Integer year,String item){
+        ///pieChart.getData().clear();
+        PieChart pie = new PieChart();
         Map<String,Integer> list = null;
         System.out.println(PieChoice.getSelectionModel().getSelectedItem());
         if("Vehicle".equals(item)) {
-              list = filteredData.stream().collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
+              list = filteredData.stream().filter(o -> o.getYear() == year).collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
         }else{
-              list = filteredData.stream().collect(Collectors.groupingBy(Sales::getRegion, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
+              list = filteredData.stream().filter(o -> o.getYear() == year).collect(Collectors.groupingBy(Sales::getRegion, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
         }
              list.entrySet().stream().forEach((entry) -> {
                  PieChart.Data pieData = new  PieChart.Data("" , entry.getValue());
                  pieData.setName(entry.getKey() + ": "+ entry.getValue().toString());
-                 pieChart.getData().add(pieData);
+                 pie.getData().add(pieData);
 
         });
+             HBox box = new HBox();
+             box.getChildren().add(addLabel(year.toString()));
+             box.getChildren().add(pie);
+             pieFlow.getChildren().add(box);
     }
 
 
@@ -406,5 +430,15 @@ public class DashboardController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("Lotus Dashboard About");
         stage.show();
+    }
+    @FXML
+    void addWhatIf(ActionEvent event) {
+    Sales whatIF = new Sales();
+    whatIF.setYear(newYear);
+    whatIF.setQTR(value);
+    whatIF.setRegion(null);
+    whatIF.setVehicle(null);
+    whatIF.setQuantity(value);
+    whatIfData.add(whatIF);
     }
 }

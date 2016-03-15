@@ -47,121 +47,132 @@
          </padding></HBox>
    </bottom>
    <center>
-      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <StackPane prefHeight="682.0" prefWidth="821.0" BorderPane.alignment="CENTER">
          <children>
-            <SplitPane>
+            <SplitPane dividerPositions="0.9075067024128687" orientation="VERTICAL" prefHeight="748.0" prefWidth="533.0">
                <items>
-                  <SplitPane dividerPositions="0.6501340482573726, 0.8981233243967829" orientation="VERTICAL" prefHeight="371.0" prefWidth="520.0">
-                     <items>
-                        <TabPane tabClosingPolicy="UNAVAILABLE">
-                          <tabs>
-                            <Tab text="Line Chart">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <TabPane prefHeight="482.0" prefWidth="529.0" tabClosingPolicy="UNAVAILABLE">
+                     <tabs>
+                        <Tab text="Line Chart">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="453.0" prefWidth="493.0">
+                                 <children>
+                                    <LineChart fx:id="lineChart" visible="false">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis side="LEFT" />
+                                       </yAxis>
+                                    </LineChart>
+                                    <LineChart fx:id="lineChart" layoutY="53.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis side="LEFT" />
+                                       </yAxis>
+                                    </LineChart>
+                                    <GridPane>
                                        <children>
-                                          <LineChart fx:id="lineChart" visible="false">
-                                            <xAxis>
-                                              <CategoryAxis side="BOTTOM" />
-                                            </xAxis>
-                                            <yAxis>
-                                              <NumberAxis side="LEFT" />
-                                            </yAxis>
-                                          </LineChart>
-                                          <LineChart fx:id="lineChart" layoutY="53.0">
-                                            <xAxis>
-                                              <CategoryAxis side="BOTTOM" />
-                                            </xAxis>
-                                            <yAxis>
-                                              <NumberAxis side="LEFT" />
-                                            </yAxis>
-                                          </LineChart>
-                                          <GridPane>
-                                            <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="58.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
+                                          <Label text="X Axis:">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                          <ChoiceBox fx:id="LineXAxis" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" />
+                                          <ChoiceBox fx:id="LineYAxis" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label text="Y Axis" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="58.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Bar Chart">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <BarChart fx:id="barChart" animated="false" layoutY="53.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis side="LEFT" />
+                                       </yAxis>
+                                    </BarChart>
+                                    <GridPane>
+                                       <children>
+                                          <Label text="X Axis:">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                          <ChoiceBox fx:id="BarXAxis" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" />
+                                          <ChoiceBox fx:id="BarYAxis" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label text="Y Axis" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="58.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="PiePane" text="Pie">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                              <children>
-                                                <Label text="X Axis:">
-                                                   <font>
-                                                      <Font size="17.0" />
-                                                   </font>
-                                                </Label>
-                                                <ChoiceBox fx:id="LineXAxis" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" />
-                                                <ChoiceBox fx:id="LineYAxis" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label text="Y Axis" GridPane.rowIndex="1">
-                                                   <font>
-                                                      <Font size="17.0" />
-                                                   </font>
-                                                </Label>
+                                                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <HBox prefHeight="25.0" prefWidth="474.0">
+                                                         <children>
+                                                            <Label text="Total Sales by:" />
+                                                            <ChoiceBox fx:id="PieChoice" />
+                                                         </children>
+                                                      </HBox>
+                                                      <FlowPane fx:id="pieFlow" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="619.0" prefWidth="583.0" />
+                                                   </children>
+                                                </VBox>
                                              </children>
-                                          </GridPane>
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </Tab>
-                            <Tab text="Bar Chart">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <BarChart fx:id="barChart" animated="false" layoutY="53.0">
-                                            <xAxis>
-                                              <CategoryAxis side="BOTTOM" />
-                                            </xAxis>
-                                            <yAxis>
-                                              <NumberAxis side="LEFT" />
-                                            </yAxis>
-                                          </BarChart>
-                                          <GridPane>
-                                             <children>
-                                                <Label text="X Axis:">
-                                                   <font>
-                                                      <Font size="17.0" />
-                                                   </font>
-                                                </Label>
-                                                <ChoiceBox fx:id="BarXAxis" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" />
-                                                <ChoiceBox fx:id="BarYAxis" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label text="Y Axis" GridPane.rowIndex="1">
-                                                   <font>
-                                                      <Font size="17.0" />
-                                                   </font>
-                                                </Label>
-                                             </children>
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="58.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="142.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                          </GridPane>
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </Tab>
-                              <Tab fx:id="PiePane" text="Pie">
-                                 <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <PieChart fx:id="pieChart" layoutX="6.0" layoutY="27.0" />
-                                          <ChoiceBox fx:id="PieChoice" layoutX="76.0" layoutY="2.0" prefWidth="150.0" />
-                                          <Label layoutY="6.0" text="Total Sales by:" />
-                                       </children>
-                                    </AnchorPane>
-                                 </content>
-                              </Tab>
-                          </tabs>
-                        </TabPane>
-                        <TableView fx:id="dataTable" prefHeight="200.0" prefWidth="200.0" />
-                        <HBox fx:id="statsBox" prefHeight="100.0" prefWidth="200.0" />
-                     </items>
-                  </SplitPane>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+                  <HBox fx:id="statsBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" />
                </items>
             </SplitPane>
             <Region fx:id="veil" prefHeight="200.0" prefWidth="200.0" visible="false" />
@@ -191,10 +202,37 @@
       </MenuBar>
    </top>
    <left>
-      <SplitPane orientation="VERTICAL" prefHeight="748.0" prefWidth="256.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="748.0" prefWidth="219.0" BorderPane.alignment="CENTER">
          <items>
             <VBox fx:id="chartFilters" prefHeight="200.0" prefWidth="100.0" />
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="What if?" />
+                  <Label text="Year: " />
+                  <TextField fx:id="newYear" />
+                  <Label text="Quater" />
+                  <TextField fx:id="newQuater" />
+                  <Label text="Region" />
+                  <TextField fx:id="newRegion" />
+                  <Label text="Vehicle" />
+                  <TextField fx:id="newVehicle" />
+                  <Label text="Ammount" />
+                  <TextField fx:id="newAmmount" />
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addWhatIf" text="Add">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
          </items>
       </SplitPane>
    </left>
+   <right>
+      <SplitPane orientation="VERTICAL" prefHeight="748.0" prefWidth="393.0" BorderPane.alignment="CENTER">
+         <items>
+            <TableView fx:id="dataTable" prefHeight="746.0" prefWidth="336.0" />
+         </items>
+      </SplitPane>
+   </right>
 </BorderPane>
