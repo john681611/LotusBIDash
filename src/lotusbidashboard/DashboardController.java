@@ -34,6 +34,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
@@ -53,13 +54,40 @@ import javafx.stage.Stage;
 public class DashboardController implements Initializable {
     
      @FXML
+    private CheckBox autoUpdateCheck;
+
+    @FXML
+    private Label lastUpdatedLabel;
+
+    @FXML
+    private LineChart<?, ?> lineChart;
+
+    @FXML
+    private ChoiceBox<?> LineXAxis;
+
+    @FXML
+    private ChoiceBox<?> LineYAxis;
+
+    @FXML
+    private BarChart<?, ?> barChart;
+
+    @FXML
+    private ChoiceBox<?> BarXAxis;
+
+    @FXML
+    private ChoiceBox<?> BarYAxis;
+
+    @FXML
     private Tab PiePane;
 
     @FXML
-    private TextField newYear;
+    private ChoiceBox<String> PieChoice;
 
     @FXML
-    private CheckBox autoUpdateCheck;
+    private FlowPane pieFlow;
+
+    @FXML
+    private HBox statsBox;
 
     @FXML
     private Region veil;
@@ -71,66 +99,41 @@ public class DashboardController implements Initializable {
     private VBox chartFilters;
 
     @FXML
-    private LineChart<?, ?> lineChart;
+    private ComboBox<String> newYear;
 
     @FXML
-    private FlowPane pieFlow;
+    private ChoiceBox<String> newQuater;
+
+    @FXML
+    private ComboBox<String> newRegion;
+
+    @FXML
+    private ComboBox<String> newVehicle;
 
     @FXML
     private TextField newAmmount;
 
     @FXML
-    private ChoiceBox<?> LineXAxis;
+    private TableView<Sales> dataTable;
 
-    @FXML
-    private ChoiceBox<?> BarXAxis;
-
-    @FXML
-    private BarChart<?, ?> barChart;
-
-    @FXML
-    private HBox statsBox;
-
-    @FXML
-    private TableView<?> dataTable;
-
-    @FXML
-    private ChoiceBox<?> PieChoice;
-
-    @FXML
-    private TextField newVehicle;
-
-    @FXML
-    private Label lastUpdatedLabel;
-
-    @FXML
-    private ChoiceBox<?> LineYAxis;
-
-    @FXML
-    private ChoiceBox<?> BarYAxis;
-
-    @FXML
-    private TextField newQuater;
-    
-    @FXML
-    private TextField newRegion;
 
 
     private final SalesService salesService = new SalesService();
-    private ObservableList<Sales> data = FXCollections.observableArrayList();
-    private ObservableList<Sales> whatIfData = FXCollections.observableArrayList();
-    private ObservableList<Sales> filteredData = FXCollections.observableArrayList();
+    private final ObservableList<Sales> data = FXCollections.observableArrayList();
+    private final ObservableList<Sales> whatIfData = FXCollections.observableArrayList();
+    private final ObservableList<Sales> filteredData = FXCollections.observableArrayList();
     private List<Integer> years;
     private List<String> vehicles;
     private List<String> regions;
     private final List<String> quarters = Arrays.asList("Q1","Q2","Q3","Q4");
-    private List<CheckBox> yearCheckboxes = new ArrayList<CheckBox>();
-    private List<CheckBox> vehicleCheckboxes = new ArrayList<CheckBox>();
-    private List<CheckBox> regionCheckboxes = new ArrayList<CheckBox>();
-    private List<CheckBox> quarterCheckboxes = new ArrayList<CheckBox>();
+    private final List<String> quartersInts = Arrays.asList("1","2","3","4");
+    private List<CheckBox> yearCheckboxes = new ArrayList<>();
+    private List<CheckBox> vehicleCheckboxes = new ArrayList<>();
+    private List<CheckBox> regionCheckboxes = new ArrayList<>();
+    private List<CheckBox> quarterCheckboxes = new ArrayList<>();
     private final List<String> pieChoiceList =  Arrays.asList("Vehicle","Region");
     
-    private Stats stats = new Stats();
+    private final Stats stats = new Stats();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -168,9 +171,16 @@ public class DashboardController implements Initializable {
                 createFilterCheckboxes();
                 addFiltersToUI();
                 generateFilteredData();
-
-                
+                buildDropdowns();         
         });
+        whatIfData.addListener((ListChangeListener.Change<? extends Sales> c) -> {
+                setFilters();
+                createFilterCheckboxes();
+                addFiltersToUI();
+                generateFilteredData();
+                buildDropdowns();         
+        });
+        
         
         buildTable();
     
@@ -191,10 +201,16 @@ public class DashboardController implements Initializable {
         });
     }  
     
-     public void generateFilteredData(){
-         filteredData.clear();
-        data.addAll(whatIfData);
-        data.stream().forEach((Sales s) -> {
+     private void generateFilteredData(){
+         filteredData.clear();  
+       ObservableList<Sales> tempData = FXCollections.observableArrayList();
+       tempData.setAll(data);
+       if(whatIfData.size() > 0){
+
+           tempData.addAll(whatIfData);
+
+         }
+        tempData.stream().forEach((Sales s) -> {
             boolean foundYear = false;
             boolean foundVehicle = false;
             boolean foundRegion = false;
@@ -257,17 +273,15 @@ public class DashboardController implements Initializable {
     private void buildPieCharts(){
         pieFlow.getChildren().clear();
         years.stream().forEach((year) -> {
-            for (CheckBox box : yearCheckboxes) {
-                if(box.isSelected() && box.getText().equals(Integer.toString(year))){
-                     buildPieChart(year,PieChoice.valueProperty().getValue().toString());
-                }
-            }  
+            yearCheckboxes.stream().filter((box) -> (box.isSelected() && box.getText().equals(Integer.toString(year)))).forEach((_item) -> {
+                buildPieChart(year,PieChoice.valueProperty().getValue());
+            });  
         });
     };
     private void buildPieChart(Integer year,String item){
         ///pieChart.getData().clear();
         PieChart pie = new PieChart();
-        Map<String,Integer> list = null;
+        Map<String,Integer> list;
         System.out.println(PieChoice.getSelectionModel().getSelectedItem());
         if("Vehicle".equals(item)) {
               list = filteredData.stream().filter(o -> o.getYear() == year).collect(Collectors.groupingBy(Sales::getVehicle, Collectors.reducing(0, Sales::getQuantity, Integer::sum)));
@@ -309,9 +323,16 @@ public class DashboardController implements Initializable {
     }
 
     private void setFilters() {
-        years = data.stream().map(o -> o.getYear()).distinct().collect(Collectors.toList());
-        vehicles = data.stream().map(o -> o.getVehicle()).distinct().collect(Collectors.toList());
-        regions = data.stream().map(o -> o.getRegion()).distinct().collect(Collectors.toList());
+          ObservableList<Sales> tempData = FXCollections.observableArrayList();
+       tempData.setAll(data);
+       if(whatIfData.size() > 0){
+
+           tempData.addAll(whatIfData);
+
+         }
+        years = tempData.stream().map(o -> o.getYear()).distinct().collect(Collectors.toList());
+        vehicles = tempData.stream().map(o -> o.getVehicle()).distinct().collect(Collectors.toList());
+        regions = tempData.stream().map(o -> o.getRegion()).distinct().collect(Collectors.toList());
     }
 
     private void createFilterCheckboxes() {
@@ -360,7 +381,7 @@ public class DashboardController implements Initializable {
     }
 
     private List<CheckBox> buildCheckboxes(List<CheckBox> cbList, List list) {
-        List<CheckBox> checkBoxes = new ArrayList<CheckBox>();
+        List<CheckBox> checkBoxes = new ArrayList<>();
 
         for (byte index = 0; index < list.size(); index++) {
             CheckBox cb = new CheckBox(list.get(index).toString());
@@ -385,10 +406,10 @@ public class DashboardController implements Initializable {
     private void buildTable() {
         TableColumn<Sales,Integer> yearCol = new TableColumn<>();
         yearCol.setText("Year");
-        yearCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("Year"));
+        yearCol.setCellValueFactory(new PropertyValueFactory<>("Year"));
         TableColumn<Sales,Integer> qtrCol = new TableColumn<>();
         qtrCol.setText("Quarter");
-        qtrCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("QTR"));
+        qtrCol.setCellValueFactory(new PropertyValueFactory<>("QTR"));
         TableColumn modelCol = new TableColumn();
         modelCol.setText("Model");
         modelCol.setCellValueFactory(new PropertyValueFactory("Vehicle"));
@@ -397,7 +418,7 @@ public class DashboardController implements Initializable {
         regionCol.setCellValueFactory(new PropertyValueFactory("Region"));
         TableColumn<Sales,Integer> salesCol = new TableColumn<>();
         salesCol.setText("Sales");
-        salesCol.setCellValueFactory(new PropertyValueFactory<Sales, Integer>("Quantity"));
+        salesCol.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
         
         dataTable.getColumns().addAll(yearCol,qtrCol,modelCol,regionCol,salesCol);
         //dataTable.itemsProperty().bind(salesService.valueProperty());
@@ -431,14 +452,34 @@ public class DashboardController implements Initializable {
         stage.setTitle("Lotus Dashboard About");
         stage.show();
     }
+    
+    private void buildDropdowns(){
+         List<String> yearsString = new ArrayList<>();
+         years.stream().forEach((year) -> {
+             yearsString.add(year.toString());
+         });
+        newYear.getItems().setAll(yearsString);
+        newRegion.getItems().setAll(regions);
+        newVehicle.getItems().setAll(vehicles);  
+    }
     @FXML
     void addWhatIf(ActionEvent event) {
+        //requires Validattion
     Sales whatIF = new Sales();
-    whatIF.setYear(newYear);
-    whatIF.setQTR(value);
-    whatIF.setRegion(null);
-    whatIF.setVehicle(null);
-    whatIF.setQuantity(value);
+    whatIF.setYear(Integer.parseInt(newYear.getValue()));
+    whatIF.setQTR(Integer.parseInt(newQuater.getValue()));
+    whatIF.setRegion(newRegion.getValue());
+    whatIF.setVehicle(newVehicle.getValue());
+    whatIF.setQuantity(Integer.parseInt(newAmmount.getText()));
     whatIfData.add(whatIF);
+    newYear.setValue(null);
+    newQuater.setValue(null);
+    newRegion.setValue(null);
+    newAmmount.setText(null);
+    }
+    
+    @FXML
+    void clearWhatIf(ActionEvent event) {
+    whatIfData.clear();
     }
 }

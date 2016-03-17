@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lotusbidashboard.DashboardController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lotusbidashboard.DashboardController">
    <bottom>
       <HBox prefHeight="11.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -209,16 +210,21 @@
                <children>
                   <Label text="What if?" />
                   <Label text="Year: " />
-                  <TextField fx:id="newYear" />
+                  <ComboBox fx:id="newYear" editable="true" prefHeight="25.0" prefWidth="234.0" />
                   <Label text="Quater" />
-                  <TextField fx:id="newQuater" />
+                  <ChoiceBox fx:id="newQuater" prefHeight="25.0" prefWidth="224.0" />
                   <Label text="Region" />
-                  <TextField fx:id="newRegion" />
+                  <ComboBox fx:id="newRegion" editable="true" prefHeight="25.0" prefWidth="234.0" />
                   <Label text="Vehicle" />
-                  <TextField fx:id="newVehicle" />
+                  <ComboBox fx:id="newVehicle" editable="true" prefHeight="25.0" prefWidth="221.0" />
                   <Label text="Ammount" />
                   <TextField fx:id="newAmmount" />
                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addWhatIf" text="Add">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#clearWhatIf" prefHeight="25.0" prefWidth="233.0" text="Clear What If data">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
