@@ -36,12 +36,17 @@
    <bottom>
       <HBox prefHeight="11.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <CheckBox fx:id="autoUpdateCheck" mnemonicParsing="false" onAction="#onAutoUpdateCheckChanged" prefHeight="17.0" prefWidth="90.0" selected="true" text="Auto update" />
-            <Label fx:id="lastUpdatedLabel" alignment="CENTER_RIGHT">
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-            </Label>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <CheckBox fx:id="autoUpdateCheck" mnemonicParsing="false" onAction="#onAutoUpdateCheckChanged" prefHeight="17.0" prefWidth="90.0" selected="true" text="Auto update" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="lastUpdatedLabel" alignment="CENTER_RIGHT" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="290.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="sysTimeLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </children>
          <padding>
             <Insets bottom="5.0" left="10.0" top="5.0" />
