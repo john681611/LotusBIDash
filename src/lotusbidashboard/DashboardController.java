@@ -141,6 +141,7 @@ public class DashboardController implements Initializable {
     private List<CheckBox> regionCheckboxes = new ArrayList<>();
     private List<CheckBox> quarterCheckboxes = new ArrayList<>();
     private final List<String> pieChoiceList =  Arrays.asList("Vehicle","Region");
+    private final Export exporter = new Export();
         
     private final Stats stats = new Stats();
     
@@ -543,5 +544,13 @@ public class DashboardController implements Initializable {
     void clearWhatIf(ActionEvent event) {
     whatIfData.clear();
    };
+        @FXML
+    void exportTo(ActionEvent event) {
+        try{
+        exporter.ExportFile(data);
+         } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                }
+    }
 }
                    

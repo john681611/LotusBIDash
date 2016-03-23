@@ -199,6 +199,11 @@
               <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Settings" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Export">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#exportTo" text="To..." />
+              </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
