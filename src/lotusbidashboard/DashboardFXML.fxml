@@ -234,11 +234,24 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#clearWhatIf" prefHeight="25.0" prefWidth="233.0" text="Clear What If data">
+                  <Button fx:id="WhatIfClear" mnemonicParsing="false" onAction="#clearWhatIf" prefHeight="25.0" prefWidth="233.0" text="Clear What If Data">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Button>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#ImportTo" prefHeight="25.0" prefWidth="102.0" text="Import" />
+                        <Button mnemonicParsing="false" onAction="#exportToIF" prefHeight="25.0" prefWidth="110.0" text="Export">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
                </children>
             </VBox>
          </items>

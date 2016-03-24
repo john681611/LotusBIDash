@@ -37,6 +37,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -124,6 +125,9 @@ public class DashboardController implements Initializable {
     
     @FXML
     private Label sysTimeLabel;
+    
+    @FXML 
+    private Button WhatIfClear;
 
      private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private final SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
@@ -141,7 +145,7 @@ public class DashboardController implements Initializable {
     private List<CheckBox> regionCheckboxes = new ArrayList<>();
     private List<CheckBox> quarterCheckboxes = new ArrayList<>();
     private final List<String> pieChoiceList =  Arrays.asList("Vehicle","Region");
-    private final Export exporter = new Export();
+    private final Port Porter = new Port();
         
     private final Stats stats = new Stats();
     
@@ -206,6 +210,7 @@ public class DashboardController implements Initializable {
                 addFiltersToUI();
                 generateFilteredData();
                 buildDropdowns();
+                WhatIfClear.setText("Clear What If Data (" + whatIfData.size() + ")");
         });
         
         buildTable();
@@ -547,10 +552,22 @@ public class DashboardController implements Initializable {
         @FXML
     void exportTo(ActionEvent event) {
         try{
-        exporter.ExportFile(data);
+        Porter.ExportFile(data);
          } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                 }
+    }
+       @FXML
+    void exportToIF(ActionEvent event) {
+        try{
+        Porter.ExportFile(whatIfData);
+         } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                }
+    }
+       @FXML
+    void ImportTo(ActionEvent event) {
+        whatIfData.setAll(Porter.Import());
     }
 }
                    
