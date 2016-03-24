@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -29,9 +31,7 @@ import javafx.stage.Stage;
  * @author Jamie
  */
 public class LoginController implements Initializable {
-    
-    private DashboardController dashboard = new DashboardController();
-    
+        
     @FXML
     PasswordField passwordTextField;
     
@@ -47,7 +47,7 @@ public class LoginController implements Initializable {
     @FXML
     ProgressIndicator progressIndicator;
     
-    private LogInService logInService = new LogInService();
+    private final LogInService logInService = new LogInService();
     
     //DEBUG TO SKIP LOGIN
     private static final boolean ISDEBUG = true;
@@ -100,11 +100,7 @@ public class LoginController implements Initializable {
     }
 
     private boolean checkLoginDetails(String user, String pass) {
-        if(user.length() > 0 && pass.length() > 0){
-            return true;
-        }else{
-            return false;
-        }
+        return user.length() > 0 && pass.length() > 0;
     }
 
     private void doLogIn() throws IOException {
@@ -113,8 +109,16 @@ public class LoginController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("DashboardFXML.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Lotus Dashboard");
+        
+        //get reference to current display device
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+
+        //set Stage boundaries to visible bounds of the main screen
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
+        
         stage.show();
     }
-    
 }

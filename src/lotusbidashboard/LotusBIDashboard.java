@@ -17,18 +17,17 @@ import javafx.stage.Stage;
  */
 public class LotusBIDashboard extends Application {
     
-    private DashboardController dashboard;
-    private LoginController login;
+    //private DashboardController dashboard;
+    //private LoginController login;
             
     @Override
     public void start(Stage stage) throws Exception {
-        dashboard = new DashboardController();
-        login = new LoginController();
+        //dashboard = new DashboardController();
+        //login = new LoginController();
         
         Parent root = FXMLLoader.load(getClass().getResource("LoginFXML.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Lotus Dashboard Login");
         stage.show();
     }
 

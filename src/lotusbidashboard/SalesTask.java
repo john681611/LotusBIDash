@@ -22,7 +22,7 @@ class SalesTask extends Task<ObservableList<Sales>> {
     private static final String SERVICE = "DashService/";
     private static final String METHOD = "SalesGetSales";
 
-    private SalesDataParser dataParser = new SalesDataParser();
+    private final SalesDataParser dataParser = new SalesDataParser();
 
     public String getData() {
         if (isServiceOnline()) {
@@ -83,7 +83,10 @@ class SalesTask extends Task<ObservableList<Sales>> {
     @Override
     protected ObservableList<Sales> call() throws Exception {
         String data = getData();
+        
+        //only for testing purposes
         System.out.println(data);
+        
         return dataParser.parseJSONData(data);
     }
 }
